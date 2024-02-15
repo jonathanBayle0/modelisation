@@ -150,8 +150,11 @@ public class StateMachineManipulation {
 		while (!fini) {
 			for (Transition t : sm.getTransitions())
 				if (t.getEvent().getName().equals(evt) && (activeState == t.getSource())) {
-					trans = t;
-					fini = true;
+					// Traitement de la guarde
+					if (trans.getGuard() != null && calculExpression(trans.getGuard()) instanceof BooleanData bool && bool.isValue()) {
+						trans = t;
+						fini = true;
+					}
 				}
 			if (!fini) {
 				activeState = activeState.getContainer();
@@ -172,7 +175,36 @@ public class StateMachineManipulation {
 			this.unactivateStateHierarchy(trans.getSource());
 			State target = trans.getTarget();
 			this.activateStateHierarchy(target);
+			// Traitement des opération du nouvel état
+			if (target.getOperation() != null) processOperation(target.getOperation());
 		}
+	}
+	
+	/**
+	 * Traitement des opérations d'un état
+	 */
+	public void processOperation(Operation ope) {
+		for(Assignment ass: ope.getContents()) {
+			if (ass.getExpression() instanceof Expression) {
+				Data data = calculExpression((Expression) ass.getExpression());
+				Variable var = ass.getVariable();
+				var.setName(ass.get_name());
+				var.setValue(data);
+			}
+			else if (ass.getExpression() instanceof Data) {
+				Variable var = ass.getVariable();
+				var.setName(ass.get_name());
+				var.setValue((Data) ass.getExpression());
+			} else {
+				Variable var = ass.getVariable();
+				var.setName(ass.get_name());
+				var.setValue(((Variable) ass.getExpression()).getValue());
+			}
+		}
+	}
+	
+	public Data calculExpression(Expression exp) {
+		return null;
 	}
 
 	public static void main(String argv[]) {
