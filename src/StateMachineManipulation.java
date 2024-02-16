@@ -11,9 +11,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLMapImpl;
 
 import SimplStateMachine.*;
-import SimplStateMachine.impl.BooleanDataImpl;
-import SimplStateMachine.impl.ExpressionImpl;
-import SimplStateMachine.impl.IntegerDataImpl;
 
 public class StateMachineManipulation {
 
@@ -75,6 +72,7 @@ public class StateMachineManipulation {
 		State s = sm.getInitialState().getReferencedState();
 		while (s != null) {
 			s.setIsActive(true);
+			processOperation(s.getOperation());
 			if (s instanceof CompositeState)
 				s = ((CompositeState) s).getInitialState().getReferencedState();
 			else
@@ -154,7 +152,7 @@ public class StateMachineManipulation {
 		while (!fini) {
 			for (Transition t : sm.getTransitions())
 				if (t.getEvent().getName().equals(evt) && (activeState == t.getSource())) {
-					// Traitement de la guarde
+					// Traitement de la garde
 					if (trans.getGuard() != null && calculExpression(trans.getGuard()) instanceof BooleanData bool && bool.isValue()) {
 						trans = t;
 						fini = true;
@@ -296,6 +294,10 @@ public class StateMachineManipulation {
 			}
 		}
 	}
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
 
 	public static void main(String argv[]) {
 
