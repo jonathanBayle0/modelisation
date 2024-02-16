@@ -154,8 +154,11 @@ public class StateMachineManipulation {
 		while (!fini) {
 			for (Transition t : sm.getTransitions())
 				if (t.getEvent().getName().equals(evt) && (activeState == t.getSource())) {
-					trans = t;
-					fini = true;
+					// Traitement de la guarde
+					if (trans.getGuard() != null && calculExpression(trans.getGuard()) instanceof BooleanData bool && bool.isValue()) {
+						trans = t;
+						fini = true;
+					}
 				}
 			if (!fini) {
 				activeState = activeState.getContainer();
@@ -176,10 +179,12 @@ public class StateMachineManipulation {
 			this.unactivateStateHierarchy(trans.getSource());
 			State target = trans.getTarget();
 			this.activateStateHierarchy(target);
+			// Traitement des op�ration du nouvel �tat
+			if (target.getOperation() != null) processOperation(target.getOperation());
 		}
 	}
 	
-	public Data calcul(ExpressionElement exp) {
+	public Data calculExpression(ExpressionElement exp) {
 		//if (exp instanceof Data e) return e;
 		//else if (exp instanceof VariableReference var) return var.getVariable().getValue();
 		if(exp instanceof IntegerData || exp instanceof BooleanData) return (Data)exp;
@@ -269,10 +274,28 @@ public class StateMachineManipulation {
 					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
 					data.setValue(!l.isValue());
 				}default: return null;
+	/**
+	 * Traitement des op�rations d'un �tat
+	 */
+	public void processOperation(Operation ope) {
+		for(Assignment ass: ope.getContents()) {
+			if (ass.getExpression() instanceof Expression) {
+				Data data = calculExpression((Expression) ass.getExpression());
+				Variable var = ass.getVariable();
+				var.setName(ass.get_name());
+				var.setValue(data);
+			}
+			else if (ass.getExpression() instanceof Data) {
+				Variable var = ass.getVariable();
+				var.setName(ass.get_name());
+				var.setValue((Data) ass.getExpression());
+			} else {
+				Variable var = ass.getVariable();
+				var.setName(ass.get_name());
+				var.setValue(((Variable) ass.getExpression()).getValue());
 			}
 		}
 	}
-	
 
 	public static void main(String argv[]) {
 
