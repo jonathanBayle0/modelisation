@@ -153,7 +153,7 @@ public class StateMachineManipulation {
 			for (Transition t : sm.getTransitions())
 				if (t.getEvent().getName().equals(evt) && (activeState == t.getSource())) {
 					// Traitement de la garde
-					if (trans.getGuard() != null && calculExpression(trans.getGuard()) instanceof BooleanData bool && bool.isValue()) {
+					if (t.getGuard() != null && calculExpression(t.getGuard()) instanceof BooleanData bool && bool.isValue()) {
 						trans = t;
 						fini = true;
 					}
@@ -321,22 +321,11 @@ public class StateMachineManipulation {
 		StateMachine model = sm.getModelBase("models/Voiture.xmi");
 		
 		sm.initStateMachine(model);
-		sm.processEvent(sm.initStateMachine(model), model );
+		sm.processEvent("accelerer", model );
 		
 		System.out.println(model.getVariables());
 		System.out.println(model.getVariables().get(0).getValue());
-		System.out.println(model.getVariables().get(1).getValue());
-		
-		EList<Transition> trans=model.getTransitions();
-		
-		for (Transition t : trans) {
-			if(t.getGuard() != null) {
-				Data res = sm.calcul(t.getGuard());
-				System.out.println("result return : "+res);
-			}	
-		}
-		
-		
+		System.out.println(model.getVariables().get(1).getValue());		
 
 		System.out.println(" Modele charge");
 	}
