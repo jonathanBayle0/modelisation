@@ -198,80 +198,94 @@ public class StateMachineManipulation {
 		//if (exp instanceof VariableReference var) return var.getVariable().getValue();
 		else {
 			Expression e =(Expression) exp;
-			Data right = calcul(((Expression) exp).getRight());
-			Data left = calcul(((Expression) exp).getLeft());
+			Data right = calculExpression(((Expression) exp).getRight());
+			Data left = calculExpression(((Expression) exp).getLeft());
 			
 			System.out.println(e);
 			
 			switch(e.getOperator()) {
-				case ADD: {
+				case ADD: 
 					IntegerData l = (IntegerData) left;
 					IntegerData r = (IntegerData) right;
 					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
 					data.setValue(l.getValue() + r.getValue());
 					return data; 
-				}case SUB:{
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
-					data.setValue(l.getValue() - r.getValue());
-					return data;
-				}case MUL:{
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
-					data.setValue(l.getValue() * r.getValue());
-				}case DIV:{
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
-					data.setValue(l.getValue() / r.getValue());
-				}case EQ:{
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l == r);
-				}case NEQ: {
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l != r);
-				}case GT: {
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l.getValue() > r.getValue());
-				}case GTE: {
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l.getValue() >= r.getValue());
-				}case LT: {
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l.getValue() < r.getValue());
-				}case LTE:{
-					IntegerData l = (IntegerData) left;
-					IntegerData r = (IntegerData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l.getValue() <= r.getValue());
-				}case AND:{
-					BooleanData l = (BooleanData) left;
-					BooleanData r = (BooleanData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l.isValue() && r.isValue());
-				}case OR : {
-					BooleanData l = (BooleanData) left;
-					BooleanData r = (BooleanData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(l.isValue() || r.isValue());
-				}case NOT:{
-					BooleanData l = (BooleanData) left;
-					BooleanData r = (BooleanData) right;
-					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
-					data.setValue(!l.isValue());
-				}default: return null;
+				case SUB:
+					IntegerData l1 = (IntegerData) left;
+					IntegerData r1 = (IntegerData) right;
+					IntegerData data1 = SimplStateMachineFactory.eINSTANCE.createIntegerData();
+					data1.setValue(l1.getValue() - r1.getValue());
+					return data1;
+				case MUL:
+					IntegerData l2 = (IntegerData) left;
+					IntegerData r2 = (IntegerData) right;
+					IntegerData data2 = SimplStateMachineFactory.eINSTANCE.createIntegerData();
+					data2.setValue(l2.getValue() * r2.getValue());
+					return data2;
+				case DIV:
+					IntegerData l3 = (IntegerData) left;
+					IntegerData r3 = (IntegerData) right;
+					IntegerData data3 = SimplStateMachineFactory.eINSTANCE.createIntegerData();
+					data3.setValue(l3.getValue() / r3.getValue());
+					return data3;
+				case EQ:
+					IntegerData l4 = (IntegerData) left;
+					IntegerData r4 = (IntegerData) right;
+					BooleanData data4 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data4.setValue(l4 == r4);
+					return data4;
+				case NEQ:
+					IntegerData l5 = (IntegerData) left;
+					IntegerData r5 = (IntegerData) right;
+					BooleanData data5 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data5.setValue(l5 != r5);
+					return data5;
+				case GT:
+					IntegerData l6 = (IntegerData) left;
+					IntegerData r6 = (IntegerData) right;
+					BooleanData data6 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data6.setValue(l6.getValue() > r6.getValue());
+					return data6;
+				case GTE:
+					IntegerData l7 = (IntegerData) left;
+					IntegerData r7 = (IntegerData) right;
+					BooleanData data7 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data7.setValue(l7.getValue() >= r7.getValue());
+					return data7;
+				case LT:
+					IntegerData l8 = (IntegerData) left;
+					IntegerData r8 = (IntegerData) right;
+					BooleanData data8 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data8.setValue(l8.getValue() < r8.getValue());
+					return data8;
+				case LTE:
+					IntegerData l9 = (IntegerData) left;
+					IntegerData r9 = (IntegerData) right;
+					BooleanData data9 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data9.setValue(l9.getValue() <= r9.getValue());
+					return data9;
+				case AND:
+					BooleanData l10 = (BooleanData) left;
+					BooleanData r10 = (BooleanData) right;
+					BooleanData data10 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data10.setValue(l10.isValue() && r10.isValue());
+					return data10;
+				case OR :
+					BooleanData l11 = (BooleanData) left;
+					BooleanData r11 = (BooleanData) right;
+					BooleanData data11 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data11.setValue(l11.isValue() || r11.isValue());
+					return data11;
+				case NOT:
+					BooleanData l12 = (BooleanData) left;
+					BooleanData data12 = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data12.setValue(!l12.isValue());
+					return data12;
+				}
+			}
+			return null;
+		}
+
 	/**
 	 * Traitement des op�rations d'un �tat
 	 */
@@ -294,11 +308,7 @@ public class StateMachineManipulation {
 			}
 		}
 	}
-<<<<<<< HEAD
-
-=======
->>>>>>> main
-
+	
 	public static void main(String argv[]) {
 
 		StateMachineManipulation sm = new StateMachineManipulation();
