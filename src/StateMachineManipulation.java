@@ -1,3 +1,4 @@
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -10,7 +11,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLMapImpl;
 
 import SimplStateMachine.*;
-import SimplStateMachine.impl.IntegerDataImpl;
 
 public class StateMachineManipulation {
 
@@ -66,7 +66,7 @@ public class StateMachineManipulation {
 		return sm;
 	}
 
-	// Initialise la machine à états en activant tous les états initiaux
+	// Initialise la machine ï¿½ ï¿½tats en activant tous les ï¿½tats initiaux
 	public void initStateMachine(StateMachine sm) {
 		sm.setIsActive(true);
 		State s = sm.getInitialState().getReferencedState();
@@ -80,7 +80,7 @@ public class StateMachineManipulation {
 		}
 	}
 
-	// Désactive la hiérarchie haute d'un état
+	// Dï¿½sactive la hiï¿½rarchie haute d'un ï¿½tat
 	public void unactivateUpStateHierarchy(State s) {
 		State up = s.getContainer();
 		while (up != null) {
@@ -89,7 +89,7 @@ public class StateMachineManipulation {
 		}
 	}
 
-	// Désactive la hiérarchie basse d'un état
+	// Dï¿½sactive la hiï¿½rarchie basse d'un ï¿½tat
 	public void unactivateDownStateHierarchy(State s) {
 		if (s instanceof CompositeState)
 			for (State down : ((CompositeState) s).getStates()) {
@@ -99,14 +99,14 @@ public class StateMachineManipulation {
 			}
 	}
 
-	// Désactive un état et toute sa hiérarchie
+	// Dï¿½sactive un ï¿½tat et toute sa hiï¿½rarchie
 	public void unactivateStateHierarchy(State s) {
 		s.setIsActive(false);
 		this.unactivateUpStateHierarchy(s);
 		this.unactivateDownStateHierarchy(s);
 	}
 
-	// Active la hiérarchie haute d'un état
+	// Active la hiï¿½rarchie haute d'un ï¿½tat
 	public void activateUpStateHierarchy(State s) {
 		State up = s.getContainer();
 		while (up != null) {
@@ -115,7 +115,7 @@ public class StateMachineManipulation {
 		}
 	}
 
-	// Active la hiérarchie basse d'un état
+	// Active la hiï¿½rarchie basse d'un ï¿½tat
 	public void activateDownStateHierarchy(State s) {
 		if (s instanceof CompositeState) {
 			State init = ((CompositeState) s).getInitialState().getReferencedState();
@@ -125,14 +125,14 @@ public class StateMachineManipulation {
 		}
 	}
 
-	// Active toute la hiérarchie d'un état
+	// Active toute la hiï¿½rarchie d'un ï¿½tat
 	public void activateStateHierarchy(State s) {
 		s.setIsActive(true);
 		this.activateUpStateHierarchy(s);
 		this.activateDownStateHierarchy(s);
 	}
 
-	// Retourne l'état actif le plus en bas de la hiérarchie
+	// Retourne l'ï¿½tat actif le plus en bas de la hiï¿½rarchie
 	public State getLeafActiveState(CompositeState comp) {
 		for (State s : comp.getStates())
 			if (s.isIsActive())
@@ -143,8 +143,8 @@ public class StateMachineManipulation {
 		return null;
 	}
 
-	// Retourne la transition partant de l'état actif le plus bas pour l'événement
-	// précisé ou null si aucune transition n'a été trouvée
+	// Retourne la transition partant de l'ï¿½tat actif le plus bas pour l'ï¿½vï¿½nement
+	// prï¿½cisï¿½ ou null si aucune transition n'a ï¿½tï¿½ trouvï¿½e
 	public Transition getTriggerableTransition(String evt, StateMachine sm) {
 		boolean fini = false;
 		State activeState = this.getLeafActiveState(sm);
@@ -167,23 +167,113 @@ public class StateMachineManipulation {
 		return trans;
 	}
 
-	// Traite un événement : recherche une transition à suivre puis si elle
-	// existe, désactive la hiérarchie de l'état source puis modifie
-	// la hiérarchie des états actifs à partir de la cible de la transition
-	// en prenant en compte le cas où la cible est un état historique
+	// Traite un ï¿½vï¿½nement : recherche une transition ï¿½ suivre puis si elle
+	// existe, dï¿½sactive la hiï¿½rarchie de l'ï¿½tat source puis modifie
+	// la hiï¿½rarchie des ï¿½tats actifs ï¿½ partir de la cible de la transition
+	// en prenant en compte le cas oï¿½ la cible est un ï¿½tat historique
 	public void processEvent(String event, StateMachine sm) {
 		Transition trans = this.getTriggerableTransition(event, sm);
 		if (trans != null) {
 			this.unactivateStateHierarchy(trans.getSource());
 			State target = trans.getTarget();
 			this.activateStateHierarchy(target);
-			// Traitement des opération du nouvel état
+			// Traitement des opï¿½ration du nouvel ï¿½tat
 			if (target.getOperation() != null) processOperation(target.getOperation());
 		}
 	}
 	
+	public Data calculExpression(ExpressionElement exp) {
+		//if (exp instanceof Data e) return e;
+		//else if (exp instanceof VariableReference var) return var.getVariable().getValue();
+		if(exp instanceof IntegerData || exp instanceof BooleanData) return (Data)exp;
+		else if(exp instanceof IntegerVariable || exp instanceof BooleanVariable) return (Data)((Variable)exp).getValue();
+		else if(exp instanceof VariableReference) {//return ((VariableReference) exp).getVariable().getValue();
+			Variable v = ((VariableReference) exp).getVariable();
+			System.out.println("v: "+v);
+			
+			IntegerData d = (IntegerData) v.getValue();
+			System.out.println("d : "+d);
+			return d;
+		}
+		//if (exp instanceof VariableReference var) return var.getVariable().getValue();
+		else {
+			Expression e =(Expression) exp;
+			Data right = calcul(((Expression) exp).getRight());
+			Data left = calcul(((Expression) exp).getLeft());
+			
+			System.out.println(e);
+			
+			switch(e.getOperator()) {
+				case ADD: {
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
+					data.setValue(l.getValue() + r.getValue());
+					return data; 
+				}case SUB:{
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
+					data.setValue(l.getValue() - r.getValue());
+					return data;
+				}case MUL:{
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
+					data.setValue(l.getValue() * r.getValue());
+				}case DIV:{
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					IntegerData data = SimplStateMachineFactory.eINSTANCE.createIntegerData();
+					data.setValue(l.getValue() / r.getValue());
+				}case EQ:{
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l == r);
+				}case NEQ: {
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l != r);
+				}case GT: {
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l.getValue() > r.getValue());
+				}case GTE: {
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l.getValue() >= r.getValue());
+				}case LT: {
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l.getValue() < r.getValue());
+				}case LTE:{
+					IntegerData l = (IntegerData) left;
+					IntegerData r = (IntegerData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l.getValue() <= r.getValue());
+				}case AND:{
+					BooleanData l = (BooleanData) left;
+					BooleanData r = (BooleanData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l.isValue() && r.isValue());
+				}case OR : {
+					BooleanData l = (BooleanData) left;
+					BooleanData r = (BooleanData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(l.isValue() || r.isValue());
+				}case NOT:{
+					BooleanData l = (BooleanData) left;
+					BooleanData r = (BooleanData) right;
+					BooleanData data = SimplStateMachineFactory.eINSTANCE.createBooleanData();
+					data.setValue(!l.isValue());
+				}default: return null;
 	/**
-	 * Traitement des opérations d'un état
+	 * Traitement des opï¿½rations d'un ï¿½tat
 	 */
 	public void processOperation(Operation ope) {
 		for(Assignment ass: ope.getContents()) {
@@ -204,7 +294,10 @@ public class StateMachineManipulation {
 			}
 		}
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 
 	public static void main(String argv[]) {
 
@@ -212,7 +305,28 @@ public class StateMachineManipulation {
 
 		System.out.println(" Chargement du modele");
 
-		StateMachine model = sm.getModelBase("models/Feu.xmi");
+		//StateMachine model = sm.getModelBase("models/Feu.xmi");
+		
+		//--TEST FONCTION MARIE--
+		StateMachine model = sm.getModelBase("models/Voiture.xmi");
+		
+		sm.initStateMachine(model);
+		sm.processEvent(sm.initStateMachine(model), model );
+		
+		System.out.println(model.getVariables());
+		System.out.println(model.getVariables().get(0).getValue());
+		System.out.println(model.getVariables().get(1).getValue());
+		
+		EList<Transition> trans=model.getTransitions();
+		
+		for (Transition t : trans) {
+			if(t.getGuard() != null) {
+				Data res = sm.calcul(t.getGuard());
+				System.out.println("result return : "+res);
+			}	
+		}
+		
+		
 
 		System.out.println(" Modele charge");
 	}
